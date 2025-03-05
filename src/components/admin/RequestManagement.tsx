@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Eye, Trash2, Check, X } from "lucide-react";
+import { Search, Eye, Trash2, Check, X, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import * as XLSX from "xlsx";
 
 interface CustomerRequest {
   id: string;
@@ -100,6 +101,10 @@ const RequestManagement = () => {
           request.id === id ? { ...request, status } : request
         );
         setRequests(updatedRequests);
+        // Обновляем currentRequest, чтобы UI отражал новый статус сразу
+        if (currentRequest && currentRequest.id === id) {
+          setCurrentRequest({ ...currentRequest, status });
+        }
       }
     } catch (error) {
       console.error("Ошибка при изменении статуса заявки:", error);
@@ -163,6 +168,82 @@ const RequestManagement = () => {
     }
   };
 
+  const exportToExcel = () => {
+    const data = filteredRequests.map((request) => ({
+      ID: request.id,
+      Клиент: request.name,
+      Email: request.email,
+      Телефон: request.phone,
+      Сообщение: request.message,
+      Дата: formatDate(request.date),
+      Статус:
+        request.status === "new"
+          ? "Новая"
+          : request.status === "processing"
+            ? "В обработке"
+            : request.status === "completed"
+              ? "Завершена"
+              : "Отклонена",
+      "Выбранный товар": request.calculatorData?.selectedProduct?.name || "-",
+      Размер: request.calculatorData
+        ? `${request.calculatorData.width} × ${request.calculatorData.height} см`
+        : "-",
+      Площадь: request.calculatorData?.area ? `${request.calculatorData.area} м²` : "-",
+      "Тип окна": request.calculatorData
+        ? {
+            standard: "Стандартное",
+            casement: "Створчатое",
+            sliding: "Раздвижное",
+            awning: "Откидное",
+            "bay-window": "Эркерное",
+            "picture-window": "Панорамное",
+          }[request.calculatorData.windowType] || request.calculatorData.windowType
+        : "-",
+      Материал: request.calculatorData
+        ? request.calculatorData.material === "vinyl"
+          ? "ПВХ (Винил)"
+          : request.calculatorData.material === "aluminum"
+            ? "Алюминий"
+            : request.calculatorData.material === "wooden"
+              ? "Дерево"
+              : request.calculatorData.material === "fiberglass"
+                ? "Стекловолокно"
+                : request.calculatorData.material === "composite"
+                  ? "Композитный материал"
+                  : request.calculatorData.material
+        : "-",
+      Остекление: request.calculatorData
+        ? {
+            single: "Одинарное",
+            double: "Двойное",
+            triple: "Тройное",
+            "low-e": "Энергосберегающее",
+          }[request.calculatorData.glazingType] || request.calculatorData.glazingType
+        : "-",
+      "Доп. функции": request.calculatorData?.additionalFeatures?.length
+        ? request.calculatorData.additionalFeatures
+            .map((feature) => {
+              const featureNames: Record<string, string> = {
+                "uv-protection": "UV-защита",
+                soundproof: "Шумоизоляция",
+                "security-glass": "Ударопрочное стекло",
+                tinted: "Тонировка",
+              };
+              return featureNames[feature] || feature;
+            })
+            .join(", ")
+        : "-",
+      Количество: request.calculatorData?.quantity
+        ? `${request.calculatorData.quantity} шт.`
+        : "-",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Заявки");
+    XLSX.writeFile(workbook, `Заявки_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -188,6 +269,14 @@ const RequestManagement = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Заявки клиентов</h2>
+        <Button
+          variant="outline"
+          onClick={exportToExcel}
+          className="flex items-center gap-2"
+        >
+          <Download className="h-4 w-4" />
+          Экспорт в Excel
+        </Button>
       </div>
 
       <div className="relative w-full max-w-sm">

@@ -32,9 +32,6 @@ const Header = ({ onAdminLogin = () => {} }: HeaderProps) => {
   const productCategories = [
     { name: "Пластиковые окна", href: "#plastic-windows" },
     { name: "Алюминиевые окна", href: "#aluminum-windows" },
-    { name: "Деревянные окна", href: "#wooden-windows" },
-    { name: "Раздвижные системы", href: "#sliding-systems" },
-    { name: "Входные двери", href: "#entrance-doors" },
   ];
 
   return (

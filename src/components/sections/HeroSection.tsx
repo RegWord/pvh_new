@@ -23,7 +23,7 @@ const HeroSection = ({
   onSecondaryCtaClick = () => {},
 }: HeroSectionProps) => {
   return (
-    <section className="relative w-full h-[600px] bg-gray-900 overflow-hidden">
+    <section className="relative w-full h-[700px] bg-gray-900 overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-black/50 z-10" />
@@ -35,8 +35,8 @@ const HeroSection = ({
       </div>
 
       {/* Content Container */}
-      <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center items-start">
-        <div className="max-w-2xl">
+      <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-start md:justify-center items-start sm:justify-start">
+        <div className="max-w-2xl mt-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
             {title}
           </h1>
@@ -64,7 +64,7 @@ const HeroSection = ({
         </div>
 
         {/* Floating Features */}
-        <div className="absolute bottom-8 left-0 right-0 px-4">
+        <div className="absolute bottom-16 left-0 right-0 px-4">
           <div className="container mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white/10 backdrop-blur-md rounded-lg p-4 text-white">
               <div className="text-center p-2">

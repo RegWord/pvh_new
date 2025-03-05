@@ -115,7 +115,7 @@ const Footer = ({
             </div>
             <Button
               variant="outline"
-              className="mt-4 border-white text-white hover:bg-white hover:text-gray-900"
+              className="mt-4 border-white text-black hover:bg-white hover:text-gray-900"
             >
               Связаться с нами
             </Button>
