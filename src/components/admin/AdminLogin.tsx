@@ -43,7 +43,7 @@ const AdminLogin = () => {
     try {
       // For demo purposes, hardcoded credentials
       // In a real app, this would be an API call to validate credentials
-      if (data.username === "admin" && data.password === "password") {
+      if (data.username === "adminsochi" && data.password === "sochiadminparol123") {
         // Store authentication token or session
         localStorage.setItem("adminAuthenticated", "true");
         navigate("/admin/dashboard");
@@ -85,7 +85,7 @@ const AdminLogin = () => {
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                         <Input
-                          placeholder="admin"
+                          placeholder="login"
                           className="pl-10"
                           {...field}
                           disabled={isLoading}
@@ -133,9 +133,6 @@ const AdminLogin = () => {
             </form>
           </Form>
 
-          <div className="mt-4 text-center text-sm text-gray-500">
-            <p>Для демо: имя пользователя "admin", пароль "password"</p>
-          </div>
         </CardContent>
       </Card>
     </div>

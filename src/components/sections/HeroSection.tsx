@@ -16,7 +16,7 @@ interface HeroSectionProps {
 const HeroSection = ({
   title = "МАСШТАБ-СТРОЙ СОЧИ",
   subtitle = "Премиальные окна и двери для вашего дома с профессиональной установкой",
-  backgroundImage = "https://images.unsplash.com/photo-1600607686527-6fb886090705?w=1920&q=80",
+  backgroundImage = "https://i.postimg.cc/8cPHGkvh/beautiful-view-blue-lake-captured-from-inside-villa.jpg",
   ctaText = "Рассчитать параметры",
   secondaryCtaText = "Наши продукты",
   onCtaClick = () => {},

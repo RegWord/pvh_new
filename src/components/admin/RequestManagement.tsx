@@ -80,13 +80,16 @@ const RequestManagement = () => {
     fetchRequestsData();
   }, []);
 
-  const filteredRequests = requests.filter(
-    (request) =>
-      (request?.name?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) ||
-      (request?.email?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) ||
-      (request?.phone?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) ||
-      (request?.message?.toLowerCase?.() || "").includes(searchQuery.toLowerCase())
-  );
+  // Фильтрация и сортировка заявок
+  const filteredRequests = requests
+    .filter(
+      (request) =>
+        (request?.name?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) ||
+        (request?.email?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) ||
+        (request?.phone?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) ||
+        (request?.message?.toLowerCase?.() || "").includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Сортировка по убыванию даты
 
   const handleStatusChange = async (
     id: string,
@@ -101,7 +104,6 @@ const RequestManagement = () => {
           request.id === id ? { ...request, status } : request
         );
         setRequests(updatedRequests);
-        // Обновляем currentRequest, чтобы UI отражал новый статус сразу
         if (currentRequest && currentRequest.id === id) {
           setCurrentRequest({ ...currentRequest, status });
         }

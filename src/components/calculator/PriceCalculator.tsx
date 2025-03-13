@@ -42,7 +42,7 @@ interface CalculatorData {
   glazingType: string;
   additionalFeatures: string[];
   quantity: number;
-  selectedProduct?: ProductType; // Добавляем выбранный продукт
+  selectedProduct?: ProductType;
 }
 
 interface ProductType {
@@ -78,6 +78,11 @@ const PriceCalculator = ({
     message: "",
   });
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  // Добавляем состояние для уведомления
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "error" | null;
+  }>({ message: "", type: null });
 
   // Загружаем категории из Firestore
   useEffect(() => {
@@ -128,7 +133,7 @@ const PriceCalculator = ({
   };
 
   const handleSubmit = () => {
-    setIsRequestModalOpen(true); // Открываем модальное окно для заявки
+    setIsRequestModalOpen(true);
   };
 
   const handleRequestSubmit = async () => {
@@ -138,24 +143,43 @@ const PriceCalculator = ({
         ...requestForm,
         calculatorData: {
           ...calculatorData,
-          area: ((calculatorData.width * calculatorData.height) / 10000).toFixed(2), // Добавляем площадь
+          area: ((calculatorData.width * calculatorData.height) / 10000).toFixed(2),
         },
         date: new Date().toISOString(),
         status: "new",
       };
       await createRequest(requestData);
       console.log("Заявка успешно отправлена:", requestData);
+      setNotification({ message: "Отправка заявки прошла успешно!", type: "success" });
       setIsRequestModalOpen(false);
       setRequestForm({ name: "", phone: "", email: "", message: "" });
-      localStorage.removeItem("selectedProduct"); // Очищаем после отправки
-      onSubmitRequest(calculatorData); // Вызываем callback
+      localStorage.removeItem("selectedProduct");
+      onSubmitRequest(calculatorData);
+      // Скрываем уведомление через 3 секунды
+      setTimeout(() => setNotification({ message: "", type: null }), 3000);
     } catch (error) {
       console.error("Ошибка при отправке заявки:", error);
+      setNotification({ message: "Произошла ошибка", type: "error" });
+      // Скрываем уведомление через 3 секунды
+      setTimeout(() => setNotification({ message: "", type: null }), 3000);
     }
   };
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto bg-white p-6 rounded-xl shadow-md">
+    <div className="w-full max-w-[1200px] mx-auto bg-white p-6 rounded-xl shadow-md relative">
+      {/* Уведомление */}
+      {notification.type && (
+        <div
+          className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${
+            notification.type === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {notification.message}
+        </div>
+      )}
+
       <div className="flex items-center gap-2 mb-6">
         <Calculator className="h-6 w-6 text-primary" />
         <h2 className="text-2xl font-bold">Калькулятор параметров окон</h2>
